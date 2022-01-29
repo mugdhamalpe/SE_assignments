@@ -7,59 +7,110 @@ class Node
 {
 public:
     Node *lchild;
-    int data;
+    int data, key;
     Node *rchild;
+    Node *next;
+    Node()
+    {
+        next = NULL;
+    }
 };
 
 class Queue
 {
 private:
-    int front;
-    int rear;
+    //int data;
+    // Queue* next;
+    // Queue(int d)
+    // {
+    //     data = d;
+    //     next = NULL;
+    // }
     int size;
     Node **Q;
 
 public:
+    Node *front;
+    Node *rear;
+
     Queue()
     {
-        front = rear = -1;
-        size = 10;
-        Q = new Node *[size];
+        front = NULL;
+        rear = NULL;
     }
-    Queue(int size)
+    bool isEmpty()
     {
-        front = rear = -1;
-        this->size = size;
-        Q = new Node *[size];
+        if (front == NULL && rear == NULL)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
-    void enqueue(Node *x);
-    Node *dequeue();
-    int isEmpty() { return front == rear; }
+
+    void enqueue(Node *n)
+    {
+        if (isEmpty())
+        {
+            front = n;
+            rear = n;
+        }
+        else
+        {
+            rear->next = n;
+            rear = n;
+        }
+    }
+
+    Node *dequeue()
+    {
+        Node *temp = NULL;
+        if (isEmpty())
+        {
+            cout << "Queue is Empty" << endl;
+            return NULL;
+        }
+        else
+        {
+            if (front == rear)
+            {
+                temp = front;
+                front = NULL;
+                rear = NULL;
+                return temp;
+            }
+            else
+            {
+                temp = front;
+                front = front->next;
+                return temp;
+            }
+        }
+    }
+
+    // void display()
+    // {
+    //     if (isEmpty())
+    //     {
+    //         cout << "Queue is Empty" << endl;
+    //     }
+    //     else
+    //     {
+    //         cout << "All elements of Queue are :" << endl;
+    //         Node *temp = front;
+    //         while (temp != NULL)
+    //         {
+    //             cout << "(" << temp->key << "," << temp->data << ")"
+    //                  << " -> ";
+    //             temp = temp->next;
+    //         }
+    //         cout << endl;
+    //     }
+    // }
 };
 
-void Queue::enqueue(Node *x)
-{
-    if (rear == size - 1)
-        cout << "Queue Full\n";
-    else
-    {
-        rear++;
-        Q[rear] = x;
-    }
-}
-Node *Queue::dequeue()
-{
-    Node *x = NULL;
-    if (front == rear)
-        cout<<"Queue is Empty\n";
-    else
-    {
-
-        x = Q[front + 1];
-        front++;
-    }
-    return x;
-}
 class Tree
 {
     Node *root;
@@ -82,9 +133,9 @@ void Tree::CreateTree()
 {
     Node *p, *t = NULL;
     int x;
-    Queue q(100);
-    cout<<"Enter root value : ";
-    cin>>x;
+    Queue q;
+    cout << "Enter root value : ";
+    cin >> x;
     root = new Node;
     root->data = x;
     root->lchild = root->rchild = NULL;
@@ -92,8 +143,8 @@ void Tree::CreateTree()
     while (!q.isEmpty())
     {
         p = q.dequeue();
-        cout<<"Enter left child of "<<p->data<<": ";
-        cin>>x;
+        cout << "Enter left child of " << p->data << ": ";
+        cin >> x;
         if (x != -1)
         {
             t = new Node;
@@ -102,8 +153,8 @@ void Tree::CreateTree()
             p->lchild = t;
             q.enqueue(t);
         }
-        cout<<"Enter right child of "<< p->data<<": ";
-        cin>>x;
+        cout << "Enter right child of " << p->data << ": ";
+        cin >> x;
         if (x != -1)
         {
             t = new Node;
@@ -119,7 +170,7 @@ void Tree::Preorder(Node *p)
     if (p)
     {
 
-        cout<<p->data<<" ";
+        cout << p->data << " ";
         Preorder(p->lchild);
         Preorder(p->rchild);
     }
@@ -130,7 +181,7 @@ void Tree::Inorder(Node *p)
     {
 
         Inorder(p->lchild);
-        cout<<p->data<<" ";
+        cout << p->data << " ";
         Inorder(p->rchild);
     }
 }
@@ -140,27 +191,27 @@ void Tree::Postorder(Node *p)
     {
         Postorder(p->lchild);
         Postorder(p->rchild);
-        cout<< p->data<<" ";
+        cout << p->data << " ";
     }
 }
 void Tree::Levelorder(Node *p)
 {
 
-    Queue q(100);
-    cout<<root->data;
+    Queue q;
+    cout << root->data;
     q.enqueue(root);
     while (!q.isEmpty())
     {
         root = q.dequeue();
         if (root->lchild)
         {
-            cout<<root->lchild->data<<" ";
+            cout << root->lchild->data << " ";
             q.enqueue(root->lchild);
         }
         if (root->rchild)
         {
         }
-        cout<< root->rchild->data<<" ";
+        cout << root->rchild->data << " ";
         q.enqueue(root->rchild);
     }
 }
@@ -181,7 +232,7 @@ int main()
 {
     Tree t;
     t.CreateTree();
-    cout<<"Height : "<<t.Height()<<endl;
+    cout << "Height : " << t.Height() << endl;
     cout << "Preorder ";
     t.Preorder();
     cout << endl;
