@@ -1,42 +1,52 @@
-#include <iostream>
-#include <stdio.h>
+#include <bits/stdc++.h>
 
 using namespace std;
 
 class Node
 {
-public:
+private:
+    int data;
     Node *lchild;
-    int data, key;
     Node *rchild;
-    Node *next;
-    Node()
+
+public:
+    Node(int data, Node *lchild = NULL, Node *rchild = NULL)
     {
-        next = NULL;
+        this->data = data;
+        this->lchild = lchild;
+        this->rchild = rchild;
     }
+    friend class Tree;
+};
+
+class QueueNode
+{
+private:
+    Node *data;
+    QueueNode *next;
+
+public:
+    QueueNode(Node *data = NULL, QueueNode *next = NULL)
+    {
+        this->data = data;
+        this->next = next;
+    }
+    friend class Queue;
 };
 
 class Queue
 {
 private:
-    //int data;
-    // Queue* next;
-    // Queue(int d)
-    // {
-    //     data = d;
-    //     next = NULL;
-    // }
     int size;
     Node **Q;
+    QueueNode *front;
+    QueueNode *rear;
 
 public:
-    Node *front;
-    Node *rear;
-
-    Queue()
+    Queue(QueueNode *front = NULL, QueueNode *rear = NULL)
     {
-        front = NULL;
-        rear = NULL;
+        this->front = front;
+        this->rear = rear;
     }
     bool isEmpty()
     {
@@ -52,21 +62,22 @@ public:
 
     void enqueue(Node *n)
     {
+        QueueNode *temp = new QueueNode(n);
         if (isEmpty())
         {
-            front = n;
-            rear = n;
+            front = temp;
+            rear = temp;
         }
         else
         {
-            rear->next = n;
-            rear = n;
+            rear->next = temp;
+            rear = temp;
         }
     }
 
     Node *dequeue()
     {
-        Node *temp = NULL;
+        QueueNode *temp = NULL;
         if (isEmpty())
         {
             cout << "Queue is Empty" << endl;
@@ -79,13 +90,17 @@ public:
                 temp = front;
                 front = NULL;
                 rear = NULL;
-                return temp;
+                Node *deTemp = temp->data;
+                delete temp;
+                return deTemp;
             }
             else
             {
                 temp = front;
                 front = front->next;
-                return temp;
+                Node *deTemp = temp->data;
+                delete temp;
+                return deTemp;
             }
         }
     }
@@ -124,8 +139,6 @@ public:
     void Postorder(Node *p);
     void Inorder() { Inorder(root); }
     void Inorder(Node *p);
-    void Levelorder() { Levelorder(root); }
-    void Levelorder(Node *p);
     int Height() { return Height(root); }
     int Height(Node *root);
 };
@@ -136,7 +149,7 @@ void Tree::CreateTree()
     Queue q;
     cout << "Enter root value : ";
     cin >> x;
-    root = new Node;
+    root = new Node(x);
     root->data = x;
     root->lchild = root->rchild = NULL;
     q.enqueue(root);
@@ -147,7 +160,7 @@ void Tree::CreateTree()
         cin >> x;
         if (x != -1)
         {
-            t = new Node;
+            t = new Node(x);
             t->data = x;
             t->lchild = t->rchild = NULL;
             p->lchild = t;
@@ -157,7 +170,7 @@ void Tree::CreateTree()
         cin >> x;
         if (x != -1)
         {
-            t = new Node;
+            t = new Node(x);
             t->data = x;
             t->lchild = t->rchild = NULL;
             p->rchild = t;
@@ -194,27 +207,7 @@ void Tree::Postorder(Node *p)
         cout << p->data << " ";
     }
 }
-void Tree::Levelorder(Node *p)
-{
 
-    Queue q;
-    cout << root->data;
-    q.enqueue(root);
-    while (!q.isEmpty())
-    {
-        root = q.dequeue();
-        if (root->lchild)
-        {
-            cout << root->lchild->data << " ";
-            q.enqueue(root->lchild);
-        }
-        if (root->rchild)
-        {
-        }
-        cout << root->rchild->data << " ";
-        q.enqueue(root->rchild);
-    }
-}
 int Tree::Height(Node *root)
 {
 
@@ -241,9 +234,6 @@ int main()
     cout << endl;
     cout << "Postorder ";
     t.Postorder();
-    cout << endl;
-    cout << "Levelorder ";
-    t.Levelorder();
     cout << endl;
     return 0;
 }
