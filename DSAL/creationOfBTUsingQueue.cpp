@@ -37,8 +37,6 @@ public:
 class Queue
 {
 private:
-    int size;
-    Node **Q;
     QueueNode *front;
     QueueNode *rear;
 
@@ -104,26 +102,6 @@ public:
             }
         }
     }
-
-    // void display()
-    // {
-    //     if (isEmpty())
-    //     {
-    //         cout << "Queue is Empty" << endl;
-    //     }
-    //     else
-    //     {
-    //         cout << "All elements of Queue are :" << endl;
-    //         Node *temp = front;
-    //         while (temp != NULL)
-    //         {
-    //             cout << "(" << temp->key << "," << temp->data << ")"
-    //                  << " -> ";
-    //             temp = temp->next;
-    //         }
-    //         cout << endl;
-    //     }
-    // }
 };
 
 class Tree
